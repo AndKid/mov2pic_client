@@ -1,31 +1,37 @@
-package com.andkid.mov2pic;
+package com.andkid.mov2pic.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import java.util.List;
+import com.andkid.mov2pic.R;
+import com.andkid.mov2pic.model.MovieList;
+import com.andkid.mov2pic.okhttp.OkHttpManager;
+import com.bumptech.glide.Glide;
 
 /**
  * Created by florentchampigny on 24/04/15.
  */
-public class TestRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class IndexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    List<Object> contents;
+    MovieList mMovieList;
+    Context mContext;
 
     static final int TYPE_HEADER = 0;
     static final int TYPE_CELL = 1;
 
-    public TestRecyclerViewAdapter(List<Object> contents) {
-        this.contents = contents;
+    public IndexRecyclerViewAdapter(MovieList movieList, Context context) {
+        this.mMovieList = movieList;
+        this.mContext = context;
     }
 
     @Override
     public int getItemViewType(int position) {
         switch (position) {
-            case 0:
-                return TYPE_HEADER;
             default:
                 return TYPE_CELL;
         }
@@ -33,7 +39,9 @@ public class TestRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        return contents.size();
+        if(mMovieList != null)
+            return mMovieList.getCount();
+        return 0;
     }
 
     @Override
@@ -61,10 +69,15 @@ public class TestRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-            case TYPE_HEADER:
-                break;
             case TYPE_CELL:
+                Glide.with(mContext).load(OkHttpManager.DOMAIN + mMovieList.movie_img[position]).into((ImageView) holder.itemView.findViewById(R.id.my_view));
+                Log.i("cyg", mMovieList.movie_img[position]);
                 break;
         }
+    }
+
+    public void setMovieList(MovieList movieList) {
+        mMovieList = movieList;
+        mMovieList.trim();
     }
 }

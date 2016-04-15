@@ -9,10 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.andkid.mov2pic.R;
+import com.andkid.mov2pic.adapter.IndexRecyclerViewAdapter;
+import com.andkid.mov2pic.model.MovieList;
 import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
 import com.github.florent37.materialviewpager.adapter.RecyclerViewMaterialAdapter;
-import com.andkid.mov2pic.R;
-import com.andkid.mov2pic.TestRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +21,16 @@ import java.util.List;
 /**
  * Created by florentchampigny on 24/04/15.
  */
-public class RecyclerViewFragment extends Fragment {
+public class RecyclerViewFragment extends Fragment implements FragmentBase{
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
+    private IndexRecyclerViewAdapter mIndexAdapter;
 
     private static final int ITEM_COUNT = 100;
 
     private List<Object> mContentItems = new ArrayList<>();
+    private MovieList movieList;
 
     public static RecyclerViewFragment newInstance() {
         return new RecyclerViewFragment();
@@ -46,7 +49,8 @@ public class RecyclerViewFragment extends Fragment {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mAdapter = new RecyclerViewMaterialAdapter(new TestRecyclerViewAdapter(mContentItems));
+        mIndexAdapter = new IndexRecyclerViewAdapter(movieList, this.getContext());
+        mAdapter = new RecyclerViewMaterialAdapter(mIndexAdapter);
         mRecyclerView.setAdapter(mAdapter);
 
         {
@@ -55,6 +59,22 @@ public class RecyclerViewFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
         }
 
+
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
+    }
+
+    @Override
+    public <T> void refreshContent(T jsonObject) {
+//        Log.i("cyg", jsonObject.toString());
+        MovieList movieList = (MovieList) jsonObject;
+        if (movieList != null) {
+            mIndexAdapter.setMovieList(movieList.trim());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 }
