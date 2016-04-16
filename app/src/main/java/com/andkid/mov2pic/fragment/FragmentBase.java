@@ -5,5 +5,5 @@ package com.andkid.mov2pic.fragment;
  */
 public interface FragmentBase {
 
-    <T> void refreshContent(T jsonObject);
+    void refreshContent(Object jsonObject);
 }

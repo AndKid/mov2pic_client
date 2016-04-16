@@ -1,5 +1,7 @@
 package com.andkid.mov2pic.model;
 
+import java.util.Map;
+
 /**
  * Created by yuguan.chen on 4/15/16.
  */
@@ -9,6 +11,7 @@ public class MovieList implements Model{
     public String[] movie_img;
     public String[] movie_title;
     public String[] movie_url;
+    public Map<String, String> nav;
 
     @Override
     public int getCount() {
@@ -27,5 +30,10 @@ public class MovieList implements Model{
             movie_title[i] = movie_title[i].trim();
         }
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "key: " + nav.keySet().toString() + "entry: " + nav.entrySet().toString();
     }
 }

@@ -64,17 +64,12 @@ public class RecyclerViewFragment extends Fragment implements FragmentBase{
     }
 
     @Override
-    public <T> void refreshContent(T jsonObject) {
+    public void refreshContent(Object jsonObject) {
 //        Log.i("cyg", jsonObject.toString());
         MovieList movieList = (MovieList) jsonObject;
         if (movieList != null) {
             mIndexAdapter.setMovieList(movieList.trim());
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.notifyDataSetChanged();
-                }
-            });
+            mAdapter.notifyDataSetChanged();
         }
     }
 }

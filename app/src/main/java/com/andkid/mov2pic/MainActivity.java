@@ -10,8 +10,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.andkid.mov2pic.adapter.ViewPagerFragmentAdapter;
-import com.andkid.mov2pic.listener.HomeListener;
+import com.andkid.mov2pic.callback.HomeListener;
+import com.andkid.mov2pic.callback.MovieListCallback;
+import com.andkid.mov2pic.model.MovieList;
 import com.github.florent37.materialviewpager.MaterialViewPager;
+import com.zhy.http.okhttp.OkHttpUtils;
+
+import okhttp3.Call;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,13 +54,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, 0, 0);
         mDrawer.addDrawerListener(mDrawerToggle);
 
-        mViewPager.getViewPager().setAdapter(new ViewPagerFragmentAdapter(getSupportFragmentManager()));
-
-        mViewPager.setMaterialViewPagerListener(new HomeListener());
-
-        mViewPager.getViewPager().setOffscreenPageLimit(mViewPager.getViewPager().getAdapter().getCount());
-        mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());//viewpager tabs
-
         View logo = findViewById(R.id.logo_white);
         if (logo != null)
             logo.setOnClickListener(new View.OnClickListener() {
@@ -65,5 +63,23 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Yes, the title is clickable", Toast.LENGTH_SHORT).show();
                 }
             });
+        OkHttpUtils.get()
+                .url(WebSites.MY_URL)
+                .build()
+                .execute(new MovieListCallback() {
+
+                    @Override
+                    public void onError(Call call, Exception e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(MovieList response) {
+                        mViewPager.getViewPager().setAdapter(new ViewPagerFragmentAdapter(getSupportFragmentManager(), response));
+                        mViewPager.setMaterialViewPagerListener(new HomeListener());
+                        mViewPager.getViewPager().setOffscreenPageLimit(mViewPager.getViewPager().getAdapter().getCount());
+                        mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());//viewpager tabs
+                    }
+                });
     }
 }

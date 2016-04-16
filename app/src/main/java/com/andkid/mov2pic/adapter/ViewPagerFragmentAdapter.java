@@ -4,56 +4,54 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.andkid.mov2pic.callback.MovieListCallback;
 import com.andkid.mov2pic.fragment.RecyclerViewFragment;
 import com.andkid.mov2pic.model.MovieList;
-import com.andkid.mov2pic.okhttp.OkHttpManager;
+import com.zhy.http.okhttp.OkHttpUtils;
+
+import okhttp3.Call;
 
 /**
  * Created by yuguan.chen on 4/15/16.
  */
 public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
+    MovieList mMovieList;
 
-    public ViewPagerFragmentAdapter(FragmentManager fm) {
+    public ViewPagerFragmentAdapter(FragmentManager fm, MovieList movieList) {
         super(fm);
+        mMovieList = movieList;
     }
 
     @Override
     public Fragment getItem(int position) {
-        switch (position % 4) {
-            case 0:
-                RecyclerViewFragment recyclerViewFragment = RecyclerViewFragment.newInstance();
-                try {
-                    new OkHttpManager(recyclerViewFragment).run("http://120.76.115.38/", MovieList.class);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return recyclerViewFragment;
-            case 1:
-                return RecyclerViewFragment.newInstance();
-            case 2:
-                return RecyclerViewFragment.newInstance();
-            default:
-                return RecyclerViewFragment.newInstance();
-        }
+        final RecyclerViewFragment recyclerViewFragment = RecyclerViewFragment.newInstance();
+        OkHttpUtils.get()
+                .url("http://120.76.115.38/")
+                .addParams("uri", (String) mMovieList.nav.keySet().toArray()[position])
+                .build()
+                .execute(new MovieListCallback() {
+
+                    @Override
+                    public void onError(Call call, Exception e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(MovieList response) {
+                        recyclerViewFragment.refreshContent(response);
+                    }
+                });
+        return recyclerViewFragment;
     }
 
     @Override
     public int getCount() {
-        return 4;
+        return mMovieList.nav.keySet().size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position % 4) {
-            case 0:
-                return "Selection";
-            case 1:
-                return "Actualités";
-            case 2:
-                return "Professionnel";
-            case 3:
-                return "Divertissement";
-        }
-        return "";
+        return (String) mMovieList.nav.values().toArray()[position];
     }
+
 }
