@@ -38,12 +38,15 @@ public class RecyclerViewFragment extends Fragment implements FragmentBase{
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_recyclerview, container, false);
+        if(mRecyclerView == null)
+            return inflater.inflate(R.layout.fragment_recyclerview, container, false);
+        return mRecyclerView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if(mRecyclerView != null) return;
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
@@ -53,19 +56,11 @@ public class RecyclerViewFragment extends Fragment implements FragmentBase{
         mAdapter = new RecyclerViewMaterialAdapter(mIndexAdapter);
         mRecyclerView.setAdapter(mAdapter);
 
-        {
-            for (int i = 0; i < ITEM_COUNT; ++i)
-                mContentItems.add(new Object());
-            mAdapter.notifyDataSetChanged();
-        }
-
-
         MaterialViewPagerHelper.registerRecyclerView(getActivity(), mRecyclerView, null);
     }
 
     @Override
     public void refreshContent(Object jsonObject) {
-//        Log.i("cyg", jsonObject.toString());
         MovieList movieList = (MovieList) jsonObject;
         if (movieList != null) {
             mIndexAdapter.setMovieList(movieList.trim());

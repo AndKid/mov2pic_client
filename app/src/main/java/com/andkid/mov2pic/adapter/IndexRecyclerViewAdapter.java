@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.andkid.mov2pic.R;
 import com.andkid.mov2pic.WebSites;
@@ -69,8 +70,9 @@ public class IndexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case TYPE_CELL:
-                Glide.with(mContext).load(WebSites.DOMAIN + mMovieList.movie_img[position]).into((ImageView) holder.itemView.findViewById(R.id.my_view));
-//                Log.i("cyg", mMovieList.movie_img[position]);
+                Glide.with(mContext).load(WebSites.DOMAIN + mMovieList.movie_img[position]).placeholder(R.drawable.load).into((ImageView) holder.itemView.findViewById(R.id.my_view));
+                TextView title = (TextView) holder.itemView.findViewById(R.id.title);
+                title.setText(mMovieList.movie_title[position]);
                 break;
         }
     }
