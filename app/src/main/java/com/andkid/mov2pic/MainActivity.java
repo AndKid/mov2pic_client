@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
+    private ViewPagerFragmentAdapter mViewPagerFragmentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, 0, 0);
         mDrawer.addDrawerListener(mDrawerToggle);
 
+        mViewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager());
+        mViewPager.getViewPager().setAdapter(mViewPagerFragmentAdapter);
+        mViewPager.setMaterialViewPagerListener(new HomeListener());
+        mViewPager.getViewPager().setOffscreenPageLimit(mViewPager.getViewPager().getAdapter().getCount());
+        mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());//viewpager tabs
+
         View logo = findViewById(R.id.logo_white);
         if (logo != null)
             logo.setOnClickListener(new View.OnClickListener() {
@@ -70,15 +77,13 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Call call, Exception e) {
-
+                        Toast.makeText(MainActivity.this, "Access network failed.", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onResponse(MovieList response) {
-                        mViewPager.getViewPager().setAdapter(new ViewPagerFragmentAdapter(getSupportFragmentManager(), response));
-                        mViewPager.setMaterialViewPagerListener(new HomeListener());
-                        mViewPager.getViewPager().setOffscreenPageLimit(mViewPager.getViewPager().getAdapter().getCount());
-                        mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());//viewpager tabs
+                        mViewPagerFragmentAdapter.setMovieList(response);
+                        mViewPagerFragmentAdapter.notifyDataSetChanged();
                     }
                 });
     }
