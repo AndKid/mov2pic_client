@@ -17,9 +17,8 @@ import okhttp3.Call;
 public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
     MovieList mMovieList;
 
-    public ViewPagerFragmentAdapter(FragmentManager fm, MovieList movieList) {
+    public ViewPagerFragmentAdapter(FragmentManager fm) {
         super(fm);
-        mMovieList = movieList;
     }
 
     @Override
@@ -46,7 +45,9 @@ public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return mMovieList.nav.keySet().size();
+        if(mMovieList != null)
+            return mMovieList.nav.keySet().size();
+        return 0;
     }
 
     @Override
@@ -54,4 +55,7 @@ public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
         return (String) mMovieList.nav.values().toArray()[position];
     }
 
+    public void setMovieList(MovieList movieList) {
+        mMovieList = movieList;
+    }
 }
