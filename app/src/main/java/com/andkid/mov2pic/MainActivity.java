@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         OkHttpUtils.get()
-                .url(WebSites.MY_URL)
+                .url(WebSites.MOVIE_LIST_URL)
                 .build()
                 .execute(new MovieListCallback() {
 

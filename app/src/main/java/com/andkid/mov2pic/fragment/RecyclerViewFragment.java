@@ -52,7 +52,7 @@ public class RecyclerViewFragment extends Fragment implements FragmentBase{
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mIndexAdapter = new IndexRecyclerViewAdapter(movieList, this.getContext());
+        mIndexAdapter = new IndexRecyclerViewAdapter(movieList, this);
         mAdapter = new RecyclerViewMaterialAdapter(mIndexAdapter);
         mRecyclerView.setAdapter(mAdapter);
 

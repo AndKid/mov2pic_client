@@ -1,13 +1,16 @@
 package com.andkid.mov2pic.adapter;
 
-import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.andkid.mov2pic.MovieContentActivity;
 import com.andkid.mov2pic.R;
 import com.andkid.mov2pic.WebSites;
 import com.andkid.mov2pic.model.MovieList;
@@ -19,14 +22,14 @@ import com.bumptech.glide.Glide;
 public class IndexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     MovieList mMovieList;
-    Context mContext;
+    Fragment mFragment;
 
     static final int TYPE_HEADER = 0;
     static final int TYPE_CELL = 1;
 
-    public IndexRecyclerViewAdapter(MovieList movieList, Context context) {
+    public IndexRecyclerViewAdapter(MovieList movieList, Fragment fragment) {
         this.mMovieList = movieList;
-        this.mContext = context;
+        this.mFragment = fragment;
     }
 
     @Override
@@ -67,12 +70,21 @@ public class IndexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         switch (getItemViewType(position)) {
             case TYPE_CELL:
-                Glide.with(mContext).load(WebSites.DOMAIN + mMovieList.movie_img[position]).placeholder(R.drawable.load).into((ImageView) holder.itemView.findViewById(R.id.my_view));
+                Glide.with(mFragment).load(WebSites.DOMAIN + mMovieList.movie_img[position]).placeholder(R.drawable.load).into((ImageView) holder.itemView.findViewById(R.id.my_view));
                 TextView title = (TextView) holder.itemView.findViewById(R.id.title);
                 title.setText(mMovieList.movie_title[position]);
+                final LinearLayout movie = (LinearLayout) holder.itemView.findViewById(R.id.movie);
+                movie.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(mFragment.getActivity(), MovieContentActivity.class);
+                        intent.putExtra(WebSites.PARAMETER_URI, mMovieList.movie_url[position]);
+                        mFragment.getActivity().startActivity(intent);
+                    }
+                });
                 break;
         }
     }

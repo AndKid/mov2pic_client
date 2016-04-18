@@ -3,19 +3,13 @@ package com.andkid.mov2pic.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.util.SparseArrayCompat;
-import android.util.Log;
 import android.util.SparseArray;
 
+import com.andkid.mov2pic.WebSites;
 import com.andkid.mov2pic.callback.MovieListCallback;
 import com.andkid.mov2pic.fragment.RecyclerViewFragment;
 import com.andkid.mov2pic.model.MovieList;
 import com.zhy.http.okhttp.OkHttpUtils;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import okhttp3.Call;
 
@@ -32,13 +26,12 @@ public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Log.i("cyg", "ViewPagerFragmentAdapter getItem");
         Fragment fragment = fragments.get(position);
         if(fragment != null) return fragment;
         final RecyclerViewFragment recyclerViewFragment = RecyclerViewFragment.newInstance();
         OkHttpUtils.get()
-                .url("http://120.76.115.38/")
-                .addParams("uri", (String) mMovieList.nav.keySet().toArray()[position])
+                .url(WebSites.MOVIE_LIST_URL)
+                .addParams(WebSites.PARAMETER_URI, (String) mMovieList.nav.keySet().toArray()[position])
                 .build()
                 .execute(new MovieListCallback() {
 

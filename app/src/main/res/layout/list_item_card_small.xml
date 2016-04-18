@@ -17,6 +17,7 @@
         app:cardPreventCornerOverlap="false"
         app:contentPadding="0dp">
         <LinearLayout
+            android:id="@+id/movie"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -24,7 +25,8 @@
                 android:id="@+id/my_view"
                 android:layout_gravity="start"
                 android:layout_width="80dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:scaleType="fitXY" />
 
             <TextView
                 android:id="@+id/title"
