@@ -3,8 +3,10 @@ package com.andkid.mov2pic;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
+import com.andkid.mov2pic.adapter.ContentRecyclerViewAdapter;
 import com.andkid.mov2pic.callback.MovieContentCallback;
 import com.andkid.mov2pic.model.MovieContent;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -16,16 +18,19 @@ import okhttp3.Call;
  */
 public class MovieContentActivity extends Activity {
     MovieContent mMovieContent;
-    TextView mTitleView;
-    TextView mSummaryView;
+    RecyclerView mContentView;
+    private ContentRecyclerViewAdapter mContentRecyclerViewAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_movie_content);
 
-        mTitleView = (TextView) findViewById(R.id.title);
-        mSummaryView = (TextView) findViewById(R.id.summary);
+        mContentView = (RecyclerView) findViewById(R.id.movie_content);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        mContentView.setLayoutManager(layoutManager);
+        mContentRecyclerViewAdapter = new ContentRecyclerViewAdapter(this);
+        mContentView.setAdapter(mContentRecyclerViewAdapter);
 
         Intent intent = getIntent();
         String uri = intent.getStringExtra(WebSites.PARAMETER_URI);
@@ -43,21 +48,10 @@ public class MovieContentActivity extends Activity {
                     @Override
                     public void onResponse(MovieContent response) {
                         mMovieContent = response;
-                        initContentView();
+                        mContentRecyclerViewAdapter.setMovieContent(response);
+                        mContentRecyclerViewAdapter.notifyDataSetChanged();
                     }
                 });
     }
-
-    void initContentView() {
-        mTitleView.setText(mMovieContent.title);
-        StringBuilder summary = new StringBuilder();
-        if(mMovieContent.summary != null) {
-            for(String s : mMovieContent.summary) {
-                summary.append(s.trim());
-            }
-        }
-        mSummaryView.setText(summary);
-    }
-
 
 }

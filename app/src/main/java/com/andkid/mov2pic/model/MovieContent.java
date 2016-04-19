@@ -20,4 +20,18 @@ public class MovieContent{
         }
         return this;
     }
+
+    public String getSummary() {
+        StringBuilder summary = new StringBuilder();
+        if(this.summary != null) {
+            for(String s : this.summary) {
+                summary.append(s.trim());
+            }
+        }
+        return summary.toString();
+    }
+
+    public boolean isImageContent(String string) {
+        return string.contains(".jpg");
+    }
 }
