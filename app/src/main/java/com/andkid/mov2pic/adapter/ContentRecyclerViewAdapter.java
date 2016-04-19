@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.andkid.mov2pic.MovieContentActivity;
 import com.andkid.mov2pic.R;
 import com.andkid.mov2pic.WebSites;
 import com.andkid.mov2pic.model.MovieContent;
@@ -20,6 +21,8 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     MovieContent mMovieContent;
     Context mContext;
+
+    private int mRequestNextPosition;
 
     static final int TYPE_HEADER = 0;
     static final int TYPE_TEXT = 1;
@@ -90,10 +93,24 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 TextView textContentView = (TextView) holder.itemView.findViewById(R.id.content_text);
                 textContentView.setText(mMovieContent.content[position - 1]);
         }
+        if(mRequestNextPosition == position) {
+            MovieContentActivity activity = (MovieContentActivity) mContext;
+            activity.getContentAsync(mMovieContent.next);
+            mRequestNextPosition = mMovieContent.content.length;
+        }
     }
 
-    public void setMovieContent(MovieContent movieContent) {
-        this.mMovieContent = movieContent;
+//    public void setMovieContent(MovieContent movieContent) {
+//        this.mMovieContent = movieContent;
+//    }
+
+    public void appendMovieContent(MovieContent movieContent) {
+        if(mMovieContent == null) {
+            this.mMovieContent = movieContent;
+        }
+        else {
+            mMovieContent.append(movieContent);
+        }
     }
 
 }

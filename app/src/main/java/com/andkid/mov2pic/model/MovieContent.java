@@ -7,6 +7,7 @@ public class MovieContent{
     public String[] summary;
     public String[] content;
     public String title;
+    public String next;
 
     public MovieContent trim() {
 
@@ -29,6 +30,14 @@ public class MovieContent{
             }
         }
         return summary.toString();
+    }
+
+    public void append(MovieContent movieContent) {
+        String[] newContent = new String[content.length + movieContent.content.length];
+        System.arraycopy(content, 0, newContent, 0, content.length);
+        System.arraycopy(movieContent.content, 0, newContent, content.length, movieContent.content.length);
+        content = newContent;
+        next = movieContent.next;
     }
 
     public boolean isImageContent(String string) {

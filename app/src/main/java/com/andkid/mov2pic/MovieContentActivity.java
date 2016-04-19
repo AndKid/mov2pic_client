@@ -34,6 +34,10 @@ public class MovieContentActivity extends Activity {
 
         Intent intent = getIntent();
         String uri = intent.getStringExtra(WebSites.PARAMETER_URI);
+        getContentAsync(uri);
+    }
+
+    public void getContentAsync(final String uri) {
         OkHttpUtils.get()
                 .url(WebSites.MOVIE_CONTENT_URL)
                 .addParams(WebSites.PARAMETER_URI, uri)
@@ -47,8 +51,8 @@ public class MovieContentActivity extends Activity {
 
                     @Override
                     public void onResponse(MovieContent response) {
-                        mMovieContent = response;
-                        mContentRecyclerViewAdapter.setMovieContent(response);
+                        response.trim();
+                        mContentRecyclerViewAdapter.appendMovieContent(response);
                         mContentRecyclerViewAdapter.notifyDataSetChanged();
                     }
                 });
