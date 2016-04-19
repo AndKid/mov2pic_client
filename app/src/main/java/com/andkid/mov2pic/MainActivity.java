@@ -11,8 +11,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.andkid.mov2pic.adapter.ViewPagerFragmentAdapter;
+import com.andkid.mov2pic.callback.HeaderBackgroundCallback;
 import com.andkid.mov2pic.callback.HomeListener;
 import com.andkid.mov2pic.callback.MovieListCallback;
+import com.andkid.mov2pic.model.HeaderBackground;
 import com.andkid.mov2pic.model.MovieList;
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
     private ViewPagerFragmentAdapter mViewPagerFragmentAdapter;
+    private HomeListener mHomeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager());
         mViewPager.getViewPager().setAdapter(mViewPagerFragmentAdapter);
-        mViewPager.setMaterialViewPagerListener(new HomeListener());
+        mHomeListener = new HomeListener();
+        mViewPager.setMaterialViewPagerListener(mHomeListener);
         mViewPager.getViewPager().setOffscreenPageLimit(mViewPager.getViewPager().getAdapter().getCount());
         mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());//viewpager tabs
 
@@ -71,6 +75,22 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Yes, the title is clickable", Toast.LENGTH_SHORT).show();
                 }
             });
+        OkHttpUtils.get()
+                .url(WebSites.MOVIE_BACKGROUND_URL)
+                .build()
+                .execute(new HeaderBackgroundCallback() {
+
+                    @Override
+                    public void onError(Call call, Exception e) {
+                        Toast.makeText(MainActivity.this, "Access network failed.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onResponse(HeaderBackground response) {
+                        mHomeListener.setHeaderBackground(response);
+                        mViewPager.notifyHeaderChanged();
+                    }
+                });
         OkHttpUtils.get()
                 .url(WebSites.MOVIE_LIST_URL)
                 .build()
