@@ -32,6 +32,10 @@ public class MovieList implements Model{
         return this;
     }
 
+    public void removeOriginalTag() {
+        nav.remove(nav.keySet().toArray()[1]);
+    }
+
     @Override
     public String toString() {
         return "key: " + nav.keySet().toString() + "entry: " + nav.entrySet().toString();

@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(MovieList response) {
+                        response.removeOriginalTag();
                         mViewPagerFragmentAdapter.setMovieList(response);
                         mViewPagerFragmentAdapter.notifyDataSetChanged();
                     }
