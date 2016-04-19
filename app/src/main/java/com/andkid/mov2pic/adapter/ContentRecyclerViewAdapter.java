@@ -84,7 +84,7 @@ public class ContentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 summary.setText(mMovieContent.getSummary());
                 break;
             case TYPE_IMAGE:
-                Glide.with(mContext).load(WebSites.DOMAIN + mMovieContent.content[position - 1]).placeholder(R.drawable.load).into((ImageView) holder.itemView.findViewById(R.id.content_image));
+                Glide.with(mContext).load(WebSites.DOMAIN + mMovieContent.content[position - 1]).into((ImageView) holder.itemView.findViewById(R.id.content_image));
                 break;
             case TYPE_TEXT:
                 TextView textContentView = (TextView) holder.itemView.findViewById(R.id.content_text);

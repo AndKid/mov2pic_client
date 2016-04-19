@@ -73,7 +73,7 @@ public class IndexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         switch (getItemViewType(position)) {
             case TYPE_CELL:
-                Glide.with(mFragment).load(WebSites.DOMAIN + mMovieList.movie_img[position]).placeholder(R.drawable.load).into((ImageView) holder.itemView.findViewById(R.id.my_view));
+                Glide.with(mFragment).load(WebSites.DOMAIN + mMovieList.movie_img[position]).into((ImageView) holder.itemView.findViewById(R.id.my_view));
                 TextView title = (TextView) holder.itemView.findViewById(R.id.title);
                 title.setText(mMovieList.movie_title[position]);
                 final LinearLayout movie = (LinearLayout) holder.itemView.findViewById(R.id.movie);

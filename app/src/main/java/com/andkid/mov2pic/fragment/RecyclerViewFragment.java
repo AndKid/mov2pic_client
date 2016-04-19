@@ -30,7 +30,8 @@ public class RecyclerViewFragment extends Fragment implements FragmentBase{
     private static final int ITEM_COUNT = 100;
 
     private List<Object> mContentItems = new ArrayList<>();
-    private MovieList movieList;
+
+    private MovieList mMovieList;
 
     public static RecyclerViewFragment newInstance() {
         return new RecyclerViewFragment();
@@ -52,7 +53,7 @@ public class RecyclerViewFragment extends Fragment implements FragmentBase{
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mIndexAdapter = new IndexRecyclerViewAdapter(movieList, this);
+        mIndexAdapter = new IndexRecyclerViewAdapter(mMovieList, this);
         mAdapter = new RecyclerViewMaterialAdapter(mIndexAdapter);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -67,4 +68,13 @@ public class RecyclerViewFragment extends Fragment implements FragmentBase{
             mAdapter.notifyDataSetChanged();
         }
     }
+
+    public void setMovieList(MovieList movieList) {
+        this.mMovieList = movieList;
+    }
+
+    public void refresh() {
+        mAdapter.notifyDataSetChanged();
+    }
+
 }

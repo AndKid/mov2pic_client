@@ -26,9 +26,17 @@ public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = fragments.get(position);
-        if(fragment != null) return fragment;
+        RecyclerViewFragment fragment = fragments.get(position);
+        if(fragment != null) {
+            fragment.refresh();
+            return fragment;
+        }
         final RecyclerViewFragment recyclerViewFragment = RecyclerViewFragment.newInstance();
+        if(position == 0) {
+            recyclerViewFragment.setMovieList(mMovieList.trim());
+            fragments.append(position, recyclerViewFragment);
+            return recyclerViewFragment;
+        }
         OkHttpUtils.get()
                 .url(WebSites.MOVIE_LIST_URL)
                 .addParams(WebSites.PARAMETER_URI, (String) mMovieList.nav.keySet().toArray()[position])
