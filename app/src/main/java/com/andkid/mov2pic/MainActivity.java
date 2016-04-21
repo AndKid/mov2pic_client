@@ -144,12 +144,12 @@ public class MainActivity extends AppCompatActivity {
     public void updateBackgroundName(String string) {
         if (string != null)
             mBGName.setText(string);
-        mHandler.post(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mViewPager.materialViewPagerHeader.finalTitleX = toolbar.getChildAt(0).getRight()
                         + mBGName.getMeasuredWidth() * mViewPager.materialViewPagerHeader.finalScale / 2;
             }
-        });
+        }, 100);
     }
 }

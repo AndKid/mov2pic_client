@@ -13,6 +13,7 @@ import com.andkid.mov2pic.model.MovieList;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import okhttp3.Call;
+import okhttp3.OkHttpClient;
 
 /**
  * Created by CHEN on 2016/4/21.
@@ -25,7 +26,7 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
 
-        OkHttpUtils.get()
+        OkHttpUtils.get().tag("andkid")
                 .url(WebSites.MOVIE_BACKGROUND_URL)
                 .build()
                 .execute(new HeaderBackgroundCallback() {
@@ -48,7 +49,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                 });
 
-        OkHttpUtils.get()
+        OkHttpUtils.get().tag("andkid")
                 .url(WebSites.MOVIE_LIST_URL)
                 .build()
                 .execute(new MovieListCallback() {
@@ -72,6 +73,11 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                 });
 
-        OkHttpUtils.delete();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        OkHttpUtils.getInstance().cancelTag("andkid");
     }
 }
