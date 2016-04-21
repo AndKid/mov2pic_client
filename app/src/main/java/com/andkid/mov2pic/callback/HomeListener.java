@@ -33,7 +33,6 @@ public class HomeListener implements MaterialViewPager.Listener {
 
     @Override
     public void onPageSelected(int page) {
-        Log.i("cyg", "page: " + page);
         if (mHeaderBackground != null)
             mActivity.updateBackgroundName(mHeaderBackground.name[page]);
     }

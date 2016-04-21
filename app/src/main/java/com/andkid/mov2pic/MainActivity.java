@@ -1,5 +1,6 @@
 package com.andkid.mov2pic;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private HomeListener mHomeListener;
     private TextView mBGName;
     private Handler mHandler = new Handler();
+    private MovieList mMovieList;
+    private HeaderBackground mHeaderBackground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setTitle("");
+
+        Intent intent = getIntent();
+        mMovieList = intent.getParcelableExtra("movieList");
+        mHeaderBackground = intent.getParcelableExtra("headerBackground");
+
+
 
         mBGName = (TextView) findViewById(R.id.bg_name);
         mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
@@ -66,12 +75,16 @@ public class MainActivity extends AppCompatActivity {
         mDrawer.addDrawerListener(mDrawerToggle);
 
         mViewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager());
+        mViewPagerFragmentAdapter.setMovieList(mMovieList);
         mViewPager.getViewPager().setAdapter(mViewPagerFragmentAdapter);
         mHomeListener = new HomeListener(this);
+        mHomeListener.setHeaderBackground(mHeaderBackground);
         mViewPager.setMaterialViewPagerListener(mHomeListener);
         mViewPager.getViewPager().setOffscreenPageLimit(mViewPager.getViewPager().getAdapter().getCount());
         mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());//viewpager tabs
 
+
+        mViewPagerFragmentAdapter.notifyDataSetChanged();
 //        View logo = findViewById(R.id.logo_white);
 //        if (logo != null)
 //            logo.setOnClickListener(new View.OnClickListener() {
@@ -81,39 +94,39 @@ public class MainActivity extends AppCompatActivity {
 //                    Toast.makeText(getApplicationContext(), "Yes, the title is clickable", Toast.LENGTH_SHORT).show();
 //                }
 //            });
-        OkHttpUtils.get()
-                .url(WebSites.MOVIE_BACKGROUND_URL)
-                .build()
-                .execute(new HeaderBackgroundCallback() {
-
-                    @Override
-                    public void onError(Call call, Exception e) {
-                        Toast.makeText(MainActivity.this, "Access network failed.", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onResponse(HeaderBackground response) {
-                        mHomeListener.setHeaderBackground(response.trim());
-                        mViewPager.notifyHeaderChanged();
-                    }
-                });
-        OkHttpUtils.get()
-                .url(WebSites.MOVIE_LIST_URL)
-                .build()
-                .execute(new MovieListCallback() {
-
-                    @Override
-                    public void onError(Call call, Exception e) {
-                        Toast.makeText(MainActivity.this, "Access network failed.", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onResponse(MovieList response) {
-                        response.removeOriginalTag();
-                        mViewPagerFragmentAdapter.setMovieList(response);
-                        mViewPagerFragmentAdapter.notifyDataSetChanged();
-                    }
-                });
+//        OkHttpUtils.get()
+//                .url(WebSites.MOVIE_BACKGROUND_URL)
+//                .build()
+//                .execute(new HeaderBackgroundCallback() {
+//
+//                    @Override
+//                    public void onError(Call call, Exception e) {
+//                        Toast.makeText(MainActivity.this, "Access network failed.", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onResponse(HeaderBackground response) {
+//                        mHomeListener.setHeaderBackground(response.trim());
+//                        mViewPager.notifyHeaderChanged();
+//                    }
+//                });
+//        OkHttpUtils.get()
+//                .url(WebSites.MOVIE_LIST_URL)
+//                .build()
+//                .execute(new MovieListCallback() {
+//
+//                    @Override
+//                    public void onError(Call call, Exception e) {
+//                        Toast.makeText(MainActivity.this, "Access network failed.", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onResponse(MovieList response) {
+//                        response.removeOriginalTag();
+//                        mViewPagerFragmentAdapter.setMovieList(response);
+//                        mViewPagerFragmentAdapter.notifyDataSetChanged();
+//                    }
+//                });
     }
 
     @Override

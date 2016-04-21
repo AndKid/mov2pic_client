@@ -362,13 +362,15 @@ public class MaterialViewPager extends FrameLayout implements ViewPager.OnPageCh
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (positionOffset >= 0.5) {
-            onPageSelected(position + 1);
-        } else if (positionOffset <= -0.5) {
-            onPageSelected(position - 1);
-        } else {
+        if(position == 0 && positionOffset == 0)
             onPageSelected(position);
-        }
+//        if (positionOffset >= 0.5) {
+//            onPageSelected(position + 1);
+//        } else if (positionOffset <= -0.5) {
+//            onPageSelected(position - 1);
+//        } else {
+//            onPageSelected(position);
+//        }
     }
 
     public void notifyHeaderChanged() {
@@ -387,7 +389,7 @@ public class MaterialViewPager extends FrameLayout implements ViewPager.OnPageCh
         if (headerDesign == null)
             return;
 
-        int fadeDuration = 400;
+        int fadeDuration = 200;
         int color = headerDesign.getColor();
         if (headerDesign.getColorRes() != 0) {
             color = getContext().getResources().getColor(headerDesign.getColorRes());
