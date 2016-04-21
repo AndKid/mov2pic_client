@@ -62,7 +62,7 @@ public class MaterialViewPager extends FrameLayout implements ViewPager.OnPageCh
     /**
      * Contains all references to MatervialViewPager's header views
      */
-    protected MaterialViewPagerHeader materialViewPagerHeader;
+    public MaterialViewPagerHeader materialViewPagerHeader;
 
     //the child toolbar
     protected Toolbar mToolbar;
@@ -383,6 +383,7 @@ public class MaterialViewPager extends FrameLayout implements ViewPager.OnPageCh
             return;
 
         HeaderDesign headerDesign = listener.getHeaderDesign(position);
+        listener.onPageSelected(position);
         if (headerDesign == null)
             return;
 
@@ -452,6 +453,7 @@ public class MaterialViewPager extends FrameLayout implements ViewPager.OnPageCh
 
     public interface Listener {
         HeaderDesign getHeaderDesign(int page);
+        void onPageSelected(int page);
     }
 
     public interface OnImageLoadListener {

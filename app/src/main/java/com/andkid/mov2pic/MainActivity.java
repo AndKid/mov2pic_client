@@ -1,13 +1,16 @@
 package com.andkid.mov2pic;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andkid.mov2pic.adapter.ViewPagerFragmentAdapter;
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ViewPagerFragmentAdapter mViewPagerFragmentAdapter;
     private HomeListener mHomeListener;
+    private TextView mBGName;
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         setTitle("");
 
+        mBGName = (TextView) findViewById(R.id.bg_name);
         mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
 
         toolbar = mViewPager.getToolbar();
@@ -61,20 +67,20 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPagerFragmentAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager());
         mViewPager.getViewPager().setAdapter(mViewPagerFragmentAdapter);
-        mHomeListener = new HomeListener();
+        mHomeListener = new HomeListener(this);
         mViewPager.setMaterialViewPagerListener(mHomeListener);
         mViewPager.getViewPager().setOffscreenPageLimit(mViewPager.getViewPager().getAdapter().getCount());
         mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());//viewpager tabs
 
-        View logo = findViewById(R.id.logo_white);
-        if (logo != null)
-            logo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mViewPager.notifyHeaderChanged();
-                    Toast.makeText(getApplicationContext(), "Yes, the title is clickable", Toast.LENGTH_SHORT).show();
-                }
-            });
+//        View logo = findViewById(R.id.logo_white);
+//        if (logo != null)
+//            logo.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mViewPager.notifyHeaderChanged();
+//                    Toast.makeText(getApplicationContext(), "Yes, the title is clickable", Toast.LENGTH_SHORT).show();
+//                }
+//            });
         OkHttpUtils.get()
                 .url(WebSites.MOVIE_BACKGROUND_URL)
                 .build()
@@ -87,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(HeaderBackground response) {
-                        mHomeListener.setHeaderBackground(response);
+                        mHomeListener.setHeaderBackground(response.trim());
                         mViewPager.notifyHeaderChanged();
                     }
                 });
@@ -120,5 +126,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
+    }
+
+    public void updateBackgroundName(String string) {
+        if (string != null)
+            mBGName.setText(string);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mViewPager.materialViewPagerHeader.finalTitleX = toolbar.getChildAt(0).getRight()
+                        + mBGName.getMeasuredWidth() * mViewPager.materialViewPagerHeader.finalScale / 2;
+            }
+        });
     }
 }
