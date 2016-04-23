@@ -16,6 +16,15 @@ public class HomeListener implements MaterialViewPager.Listener {
 
     HeaderBackground mHeaderBackground;
     MainActivity mActivity;
+    int[] colors = {
+            android.R.color.holo_red_light,
+            android.R.color.holo_orange_light,
+            R.color.lime,
+            R.color.green,
+            R.color.green_teal,
+            android.R.color.holo_blue_dark,
+            android.R.color.holo_purple
+    };
 
     public HomeListener(MainActivity activity) {
         mActivity = activity;
@@ -26,7 +35,7 @@ public class HomeListener implements MaterialViewPager.Listener {
             return null;
         }
         return HeaderDesign.fromColorResAndUrl(
-                android.R.color.holo_blue_light,
+                colors[page],
                 mHeaderBackground.background[page]);
 
     }

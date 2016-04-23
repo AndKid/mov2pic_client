@@ -27,13 +27,14 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.welcome);
 
         OkHttpUtils.get().tag("andkid")
-                .url(WebSites.MOVIE_BACKGROUND_URL)
+                .url(WebSites.MOVIE_BG_HDPI_URL)
                 .build()
                 .execute(new HeaderBackgroundCallback() {
 
                     @Override
                     public void onError(Call call, Exception e) {
                         Toast.makeText(WelcomeActivity.this, "Access network failed.", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
 
                     @Override
