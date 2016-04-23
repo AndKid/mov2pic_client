@@ -105,7 +105,7 @@ public class MaterialViewPagerHeader {
                 ViewHelper.setTranslationX(mLogo, 0);
 
                 originalTitleY = ViewHelper.getY(mLogo);
-                originalTitleX = ViewHelper.getX(mLogo);
+                originalTitleX = ViewHelper.getX(mLogo) + mLogo.getMeasuredWidth() / 2;
 
                 originalTitleHeight = mLogo.getHeight();
                 finalTitleHeight = dpToPx(21, context);
