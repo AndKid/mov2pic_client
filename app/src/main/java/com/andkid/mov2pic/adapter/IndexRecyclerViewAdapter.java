@@ -13,8 +13,14 @@ import android.widget.TextView;
 import com.andkid.mov2pic.MovieContentActivity;
 import com.andkid.mov2pic.R;
 import com.andkid.mov2pic.WebSites;
+import com.andkid.mov2pic.callback.MovieContentCallback;
+import com.andkid.mov2pic.model.MovieContent;
 import com.andkid.mov2pic.model.MovieList;
 import com.bumptech.glide.Glide;
+import com.ramotion.foldingcell.FoldingCell;
+import com.zhy.http.okhttp.OkHttpUtils;
+
+import okhttp3.Call;
 
 /**
  * Created by florentchampigny on 24/04/15.
@@ -42,7 +48,7 @@ public class IndexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemCount() {
-        if(mMovieList != null)
+        if (mMovieList != null)
             return mMovieList.getCount();
         return 0;
     }
@@ -54,13 +60,13 @@ public class IndexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         switch (viewType) {
             case TYPE_HEADER: {
                 view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_card_big, parent, false);
+                        .inflate(R.layout.list_item_layout, parent, false);
                 return new RecyclerView.ViewHolder(view) {
                 };
             }
             case TYPE_CELL: {
                 view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_card_small, parent, false);
+                        .inflate(R.layout.list_item_layout, parent, false);
                 return new RecyclerView.ViewHolder(view) {
                 };
             }
@@ -73,16 +79,44 @@ public class IndexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         switch (getItemViewType(position)) {
             case TYPE_CELL:
-                Glide.with(mFragment).load(WebSites.DOMAIN + mMovieList.movie_img[position]).into((ImageView) holder.itemView.findViewById(R.id.my_view));
-                TextView title = (TextView) holder.itemView.findViewById(R.id.title);
+                final FoldingCell cell = (FoldingCell) holder.itemView;
+                Glide.with(mFragment).load(WebSites.DOMAIN + mMovieList.movie_img[position]).into((ImageView) cell.findViewById(R.id.my_view));
+                TextView title = (TextView) cell.findViewById(R.id.title);
                 title.setText(mMovieList.movie_title[position]);
-                final LinearLayout movie = (LinearLayout) holder.itemView.findViewById(R.id.movie);
-                movie.setOnClickListener(new View.OnClickListener() {
+//                final LinearLayout movie = (LinearLayout) holder.itemView.findViewById(R.id.movie);
+//                movie.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Intent intent = new Intent(mFragment.getActivity(), MovieContentActivity.class);
+//                        intent.putExtra(WebSites.PARAMETER_URI, mMovieList.movie_url[position]);
+//                        mFragment.getActivity().startActivity(intent);
+//                    }
+//                });
+
+                TextView movieTitle = (TextView) cell.findViewById(R.id.movie_title);
+                movieTitle.setText(mMovieList.movie_title[position]);
+                Glide.with(mFragment).load(WebSites.DOMAIN + mMovieList.movie_img[position]).into((ImageView) cell.findViewById(R.id.head_image));
+                OkHttpUtils.get()
+                        .url(WebSites.MOVIE_CONTENT_URL)
+                        .addParams(WebSites.PARAMETER_URI, mMovieList.movie_url[position])
+                        .build()
+                        .execute(new MovieContentCallback() {
+
+                            @Override
+                            public void onError(Call call, Exception e) {
+
+                            }
+
+                            @Override
+                            public void onResponse(MovieContent response) {
+                                TextView movieSummary = (TextView) cell.findViewById(R.id.content_text);
+                                movieSummary.setText(response.getSummary()+response.getSummary()+response.getSummary()+response.getSummary());
+                            }
+                        });
+                cell.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(mFragment.getActivity(), MovieContentActivity.class);
-                        intent.putExtra(WebSites.PARAMETER_URI, mMovieList.movie_url[position]);
-                        mFragment.getActivity().startActivity(intent);
+                    public void onClick(View v) {
+                        cell.toggle(false);
                     }
                 });
                 break;
